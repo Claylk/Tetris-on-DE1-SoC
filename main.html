@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Draft</title>
+  <script src="https://w.soundcloud.com/player/api.js" async></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Ubuntu+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="main.css">
+</head>
+
+<body>
+
+  <label class="lightswitch">
+    <input type="checkbox" id="light-checkbox">
+    <span class="switch-image"></span>
+  </label>
+
+  <img class="dark-overlay" src="assets/dark_overlay.png" id="dark">
+
+  <script>
+    const checkbox = document.getElementById('light-checkbox');
+    const image = document.getElementById('dark');
+
+    checkbox.addEventListener('change', function() {
+        if (this.checked) {
+            image.style.display = 'none';
+        } else {
+            image.style.display = 'block';
+        }
+    });
+  </script>
+
+  <label class="music-player">
+    <input type="checkbox" id="start-stop">
+    <span class="switch-image"></span>
+  </label>
+
+  <div class="flex-container">
+    <div>
+      <img class="music-note1" src="assets/music_note.png" alt="note1">
+    </div>
+    <div>
+      <img class="music-note2" src="assets/music_note.png" alt="note2">
+    </div>
+  </div>
+  
+  <iframe id="soundcloud-widget" width="0" height="0" scrolling="no" frameborder="no" allow="autoplay" src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/playlists/1717972251&color=%23000000&auto_play=true&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true&visual=true"></iframe><div style="font-size: 10px; color: #cccccc;line-break: anywhere;word-break: normal;overflow: hidden;white-space: nowrap;text-overflow: ellipsis; font-family: Interstate,Lucida Grande,Lucida Sans Unicode,Lucida Sans,Garuda,Verdana,Tahoma,sans-serif;font-weight: 100;"><a href="https://soundcloud.com/clay-king-107194415" title="Clay King" target="_blank" style="color: #cccccc; text-decoration: none;"></a><a href="https://soundcloud.com/clay-king-107194415/sets/website-playlist" title="website playlist" target="_blank" style="color: #cccccc; text-decoration: none;"></a></div>
+
+  <script>
+    const widgetIframe = document.getElementById('soundcloud-widget');
+    const playPauseCheckbox = document.getElementById('start-stop');
+    let widget;
+  
+    SC.Widget(widgetIframe).bind(SC.Widget.Events.READY, function() {
+      widget = SC.Widget(widgetIframe);
+  
+      playPauseCheckbox.addEventListener('change', function() {
+        if (this.checked) {
+          widget.pause()
+        } else {
+          widget.play()
+        }
+      });
+    });
+
+  </script>
+  
+  <div class="current-song-container">
+    <p id="current-song-title"></p>
+  </div>
+
+  <script>
+    function updateCurrentlyPlayingSong() {
+      const currentSongTitle = document.getElementById('current-song-title');
+  
+      SC.Widget(widgetIframe).bind(SC.Widget.Events.READY, function () {
+        SC.Widget(widgetIframe).getCurrentSound(function (currentSound) {
+          if (currentSound) {
+            currentSongTitle.textContent = currentSound.user.username + ' • ' + currentSound.title;
+          } else {
+            currentSongTitle.textContent = '';
+          }
+        });
+        
+        SC.Widget(widgetIframe).bind(SC.Widget.Events.PLAY, function () {
+          SC.Widget(widgetIframe).getCurrentSound(function (currentSound) {
+            if (currentSound) {
+              currentSongTitle.textContent = currentSound.user.username + ' • ' + currentSound.title;
+            } else {
+              currentSongTitle.textContent = '';
+            }
+          });
+        });
+      });
+    }
+  
+    SC.Widget(widgetIframe).bind(SC.Widget.Events.READY, function () {
+      updateCurrentlyPlayingSong();
+    });
+  </script>
+
+  <div class="laptop">
+    <img class="laptop-image" src="assets/laptop.png">
+  </div>
+  
+  
+  
+
+</body>
+
+</html>
